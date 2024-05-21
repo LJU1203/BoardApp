@@ -1,0 +1,90 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model Board.Models.PostViewModel
+
+
+<style>
+    .post-content img {
+        max-width: 100%; 
+        height: auto;
+    }
+</style>
+
+
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">@Model.Post.Title</h1>
+            <div class="post-content">
+                @Html.Raw(Model.Post.Content)
+            </div>
+        </div>
+    </div>
+
+    @if (Model.IsAuthor)
+    {
+        <div style="float: right; margin:10;">
+            <a class="btn btn-primary" asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Post.PostId">Edit</a>
+            <a class="btn btn-danger" asp-controller="Posts" asp-action="Delete" asp-route-id="@Model.Post.PostId">Delete</a>
+        </div>
+    }
+
+    <div class="mt-4">
+        <h2>Comments</h2>
+        @if (Model.Comments.Any())
+        {
+            <ul style="list-style-type: none; padding: 0;">
+                @foreach (var comment in Model.Comments)
+                {
+                    <li style="margin-bottom: 10px; border-bottom: 1px solid #ddd; padding: 10px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; ">
+                            <div style="flex-grow: 1; display: flex; align-items: center; min-width: 0; width: 70%;">
+                                <span style="flex-shrink: 0; margin-right: 10px; font-weight: bold;">@comment.Username</span>
+                                <span style="word-break: break-all;">@comment.Content</span>
+                            </div>
+                            <div style="display: flex; align-items: center; flex-shrink: 0; margin-left: 10px;">
+                                <span style="margin-right: 10px;">@comment.DateTime.ToString("g")</span>
+                                @if (comment.IsAuthor)
+                                {
+                                    <form asp-action="DeleteComment" asp-route-id="@comment.CommentId" method="post" style="margin: 0;">
+                                        <button type="submit" style="background: none; border: none; color: red; cursor: pointer;">&#10006;</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No comments yet.</p>
+        }
+
+        @if (!Model.IsLoggedIn)
+        {
+        }
+        else
+        {
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4>Add a Comment</h4>
+                    <form method="post" action="@Url.Action("AddComment", "Posts")">
+                        <input type="hidden" name="postId" value="@Model.Post.PostId" />
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Comment</label>
+                            <textarea class="form-control" id="content" name="content" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    </form>
+                </div>
+            </div>
+            
+        }
+    </div>
+</div>

@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<div class="container">
+    <h2>Login</h2>
+    <form asp-action="Login" method="post">
+        <div class="mb-3">
+            <label for="loginId" class="form-label">Login ID</label>
+            <input type="text" class="form-control" id="loginId" name="loginId" required>
+            <small class="text-danger" id="loginError"></small>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+
+    <div class="mt-3">
+        <p>Don't have an account?</p>
+        <a href="/Users/Register" class="btn btn-secondary">Register</a>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var errorMessage = '@ViewBag.ErrorMessage';
+            if (errorMessage) {
+                alert(errorMessage);
+            }
+        });
+    </script>
+}

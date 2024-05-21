@@ -1,0 +1,53 @@
+﻿<script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+
+@model Board.Models.CreatePostViewModel
+
+<form method="post" enctype="multipart/form-data" id="postForm">
+    <div class="mt-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" asp-for="Title" id="Title" />
+    </div>
+
+    <div class="mt-3">
+        <label class="form-label">Content</label>
+        <textarea id="editor" class="form-control" asp-for="Content" rows="5"></textarea>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Post</button>
+    </div>
+</form>
+
+<script>
+    let editorInstance;
+
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            ckfinder: {
+                uploadUrl: "@Url.Action("UploadImage", "Posts")",
+            }
+        })
+        .then(editor => {
+            editorInstance = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    document.getElementById('postForm').addEventListener('submit', function (event) {
+        const title = document.getElementById('Title').value;
+        const content = editorInstance.getData(); // Use the CKEditor API to get the content
+
+        if (title.length === 0) {
+            alert("Title cannot be empty.");
+            event.preventDefault();
+            return;
+        }
+
+        if (content.length === 0) {
+            alert("Content cannot be empty.");
+            event.preventDefault();
+            return;
+        }
+    });
+</script>

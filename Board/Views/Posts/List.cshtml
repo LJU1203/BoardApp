@@ -1,0 +1,99 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model Board.Models.ListViewModel
+
+
+@if (Model.IsLoggedIn)
+{
+    <a class="btn btn-success" asp-controller="Posts" asp-action="Create">Post</a>
+    <a class="btn btn-secondary" asp-controller="Users" asp-action="Logout">Logout</a>
+}
+else
+{
+    <a class="btn btn-primary" asp-controller="Users" asp-action="Login">Login</a>
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th style="width: 10%;">ID</th>
+            <th style="width: 70%;">Title</th>
+            <th style="width: 10%;">Author</th>
+            <th style="width: 10%;">Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var post in Model.PostItems)
+        {
+            <tr>
+                <td>@post.PostId</td>
+                <td>
+                    <a asp-controller="Posts" asp-action="View" asp-route-id="@post.PostId">@post.Title</a>
+                </td>
+                <td>@post.Username</td>
+                <td>@post.DatePosted.ToString("MM/dd HH:mm")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid d-flex justify-content-between">
+        <ul class="pagination mb-0">
+            <!-- Use mb-0 to remove bottom margin -->
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(Model.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="?page=@i">@i</a>
+                </li>
+            }
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?page=@(Model.CurrentPage + 1)">Next</a>
+                </li>
+            }
+        </ul>
+
+        <form asp-action="List" method="get" class="form-inline">
+            <input type="text" class="form-control mr-sm-2" id="searchBox" name="search" placeholder="Search" />
+            <button type="submit" class="btn btn-primary">ㅁ</button>
+        </form>
+    </div>
+</nav>
+
+<style>
+    .navbar .container-fluid {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .pagination {
+        display: flex;
+        flex-grow: 0;
+        margin-bottom: 0; /* Aligns vertically center and removes any bottom margin */
+    }
+
+    .form-inline {
+        flex-basis: 50%;
+        display: flex;
+        justify-content: flex-end; /* Aligns the form to the right */
+    }
+
+    .form-inline .form-control {
+        margin-right: .5rem; /* Space between input and button */
+    }
+</style>
